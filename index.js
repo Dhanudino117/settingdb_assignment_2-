@@ -1,15 +1,30 @@
-const express = require('express');
-const { resolve } = require('path');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
 
 const app = express();
-const port = 3010;
+const PORT = 8000;
 
-app.use(express.static('static'));
+// Load environment variables
+const MONGO_URI = process.env.MONGO_URI;
 
-app.get('/', (req, res) => {
-  res.sendFile(resolve(__dirname, 'pages/index.html'));
+// Connect to MongoDB
+mongoose
+  .connect(MONGO_URI)
+  .then(() => {
+    console.log("Connected to database");
+  })
+  .catch((error) => {
+    console.error(`Error connecting to database: ${error.message}`);
+    process.exit(1); // Exit the application on error
+  });
+
+// Set up a basic route
+app.get("/", (req, res) => {
+  res.send("Customer Management System is running!");
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
